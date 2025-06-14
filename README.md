@@ -63,6 +63,40 @@ You have access to these tools:
 To use: <tool_call>{"name": "get_weather", "parameters": {"location": "Tokyo"}}</tool_call>
 ```
 
+## MCP Clients: Interacting with MCP Servers
+
+If you want your AI agent to interact with MCP servers, you need an MCP client. Some UI tools (Claude Desktop and Cursor) have this built-in for you already. But you can do this programmatically via code as well.
+
+What it usually boils down to is declaring your MCP server in a config file with instructions on how to access it. In the case of [Claude Desktop](https://claude.ai/download), it looks something like this:
+
+```json
+{
+  "mcpServers": {
+    "crazy-weather": {
+      "command": "/Users/pixegami/.local/bin/uv",
+      "args": [
+        "run",
+        // [Truncated]...
+        "/[PATH_TO_PROJECT]/src/mcp_crazy_weather.py"
+      ]
+    }
+  }
+}
+```
+
+And this will live inside the `claude_desktop_config.json` file which you can access via the Developer settings. But you can also take a shortcut and install it right away by running this command (which will just create the entry in the config file for you):
+
+```sh
+mcp install server.py
+```
+
+You will need to restart Claude desktop to see the tool in your "search and tools" section.
+
+For options on implementing MCP clients in code:
+
+- https://modelcontextprotocol.io/quickstart/client
+- https://github.com/mcp-use/mcp-use
+
 ## Notes For Later
 
 - Google Sheets MCP Server: https://github.com/xing5/mcp-google-sheets
