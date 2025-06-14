@@ -1,4 +1,4 @@
-# Python - MCP Random Weather
+# Python Simple MCP Tutorial
 
 This project demonstrates a simple "random weather" server using the `mcp` library. It exposes a tool that returns a random weather condition for a given location.
 
@@ -97,13 +97,32 @@ For options on implementing MCP clients in code:
 - https://modelcontextprotocol.io/quickstart/client
 - https://github.com/mcp-use/mcp-use
 
-## Notes For Later
+## Using Third-Party MCP Servers (Google Sheets Example)
 
-- Google Sheets MCP Server: https://github.com/xing5/mcp-google-sheets
-- Follow all instructions to set up the MCP server.
-- Set up Google Cloud:
-  - Create a service account.
-  - Service account JSON.
+If your goal is to build powerful and useful AI agents, then you're probably more interested in using existing MCP servers rather than creating your own. There's a huge list of available servers here from both first-party and third-party developers: https://github.com/modelcontextprotocol/servers
+
+It's also really easy to use in Claude Desktop. For this example, let's try integrating Google Sheets access (not just to read, but to create and modify).
+
+- Follow the instructions on https://github.com/xing5/mcp-google-sheets.
+- Set up Google access:
+  - Create a Google Cloud account and project.
+  - Create a service role and save the JSON to disk somewhere.
+  - Create a folder in Google drive, and share its permission to the service account email.
   - Enable Drive and Sheets API in the GCP project.
-- Set up Claude desktop
-- Set up MCP server with Claude desktop.
+
+Then set up the MCP server in Claude desktop (replace the environment variables):
+
+```json
+{
+  "google-sheets": {
+    "command": "/Users/pixegami/.local/bin/uvx",
+    "args": ["mcp-google-sheets@latest"],
+    "env": {
+      "SERVICE_ACCOUNT_PATH": "[...]/keys/service-account-xxx.json",
+      "DRIVE_FOLDER_ID": "XXX"
+    }
+  }
+}
+```
+
+This will now make Google Sheets available as a tool. The `uvx` command also lets you run it without having to clone the Github project or install any dependencies/environments. Pretty cool!
