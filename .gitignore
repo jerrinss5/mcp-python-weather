@@ -8,6 +8,7 @@ __pycache__/
 *.tmp
 tmp/
 output/
+keys/
 
 # C extensions
 *.so
