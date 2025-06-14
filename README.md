@@ -34,6 +34,35 @@ mcp dev src/mcp_crazy_weather.py
 
 Then wait a while for to load, and click the link to "open inspector with token pre-filled". This will give you a UI you can use to test the MCP server right in your browser.
 
+## Deep Dive
+
+How does our AI agent know how to use this MCP tool? Well, in short, it gets serialized into a JSON schema.
+
+FastMCP automatically registers the get_weather function as a tool, extracting the schema from the function signature and docstring.
+
+```json
+{
+  "name": "get_weather",
+  "description": "Get current weather for a location",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "location": { "type": "string" }
+    },
+    "required": ["location"]
+  }
+}
+```
+
+Then, the AI agent that we use (e.g. Claude Desktop, Cursor, or our own implementation) will know about these tools and know how to invoke them via prompt engineering. It will be turned into a prompt similar to this:
+
+```text
+You have access to these tools:
+- get_weather: Get current weather for a location
+
+To use: <tool_call>{"name": "get_weather", "parameters": {"location": "Tokyo"}}</tool_call>
+```
+
 ## Notes For Later
 
 - Google Sheets MCP Server: https://github.com/xing5/mcp-google-sheets
