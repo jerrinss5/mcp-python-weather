@@ -1,8 +1,8 @@
 # Python Simple MCP Tutorial
 
-This project demonstrates a simple "random weather" server using the `mcp` library. It exposes a tool that returns a random weather condition for a given location.
+This project demonstrates a simple weather server using the `mcp` library. It exposes a tool that returns real weather data for a given location using the OpenWeatherMap API.
 
-MCP (Model Context Protocol) is a universal standard that enables AI agents (LLMs) to access data, tools and services. In this case, we will build a "server" that generates (random) weather data for an LLM to interact with.
+MCP (Model Context Protocol) is a universal standard that enables AI agents (LLMs) to access data, tools and services. In this case, we will build a "server" that fetches real weather data for an LLM to interact with.
 
 ## Setting Up
 
@@ -24,12 +24,24 @@ Install dependencies.
 uv sync
 ```
 
+## API Key Setup
+
+This project uses the OpenWeatherMap API to fetch real weather data. You'll need to:
+
+1. Sign up for a free account at [OpenWeatherMap](https://openweathermap.org/api)
+2. Get your API key from the dashboard
+3. Set the environment variable:
+
+```sh
+export OPENWEATHER_API_KEY=your_api_key_here
+```
+
 ## How To Run
 
 To test the weather MCP server, execute the following command:
 
 ```sh
-mcp dev src/mcp_crazy_weather.py
+mcp dev src/mcp_weather.py
 ```
 
 Then wait a while for to load, and click the link to "open inspector with token pre-filled". This will give you a UI you can use to test the MCP server right in your browser.
@@ -72,17 +84,18 @@ What it usually boils down to is declaring your MCP server in a config file with
 ```json
 {
   "mcpServers": {
-    "crazy-weather": {
-      "command": "/Users/pixegami/.local/bin/uv",
-      "args": [
-        "run",
-        // [Truncated]...
-        "/[PATH_TO_PROJECT]/src/mcp_crazy_weather.py"
-      ]
+    "weather": {
+      "command": "uv",
+      "args": ["run", "[...]", "/[PATH_TO_PROJECT]/src/mcp_weather.py"],
+      "env": {
+        "OPENWEATHER_API_KEY": "your_api_key_here"
+      }
     }
   }
 }
 ```
+
+(This example is simplified — refer to https://modelcontextprotocol.io/quickstart/user for more details)
 
 And this will live inside the `claude_desktop_config.json` file which you can access via the Developer settings. But you can also take a shortcut and install it right away by running this command (which will just create the entry in the config file for you):
 
@@ -115,7 +128,7 @@ Then set up the MCP server in Claude desktop (replace the environment variables)
 ```json
 {
   "google-sheets": {
-    "command": "/Users/pixegami/.local/bin/uvx",
+    "command": "uvx",
     "args": ["mcp-google-sheets@latest"],
     "env": {
       "SERVICE_ACCOUNT_PATH": "[...]/keys/service-account-xxx.json",
@@ -125,4 +138,13 @@ Then set up the MCP server in Claude desktop (replace the environment variables)
 }
 ```
 
-This will now make Google Sheets available as a tool. The `uvx` command also lets you run it without having to clone the Github project or install any dependencies/environments. Pretty cool!
+This will now make Google Sheets available as a tool. The `uvx` command also lets you run it without having to clone the Github project or install any dependencies/environments.
+
+## Setting Up uv and uvx commands
+
+On MacOS/Linux, Claude desktop might complain that it can't find `uv` or `uvx` when you try to start the server. You might just have to create a symlink to the binary.
+
+```sh
+sudo ln -s ~/.local/bin/uv /usr/local/bin/uv
+sudo ln -s ~/.local/bin/uvx /usr/local/bin/uvx
+```
