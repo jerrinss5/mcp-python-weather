@@ -148,3 +148,4 @@ On MacOS/Linux, Claude desktop might complain that it can't find `uv` or `uvx` w
 sudo ln -s ~/.local/bin/uv /usr/local/bin/uv
 sudo ln -s ~/.local/bin/uvx /usr/local/bin/uvx
 ```
+
